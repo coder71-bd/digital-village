@@ -50,7 +50,7 @@ app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser()); // for cookies
-app.use(express.static(path.join(__dirname, "/frontend/build"))); // Serve the static files from the React app
+app.use(express.static(path.join(__dirname, "./frontend/build"))); // Serve the static files from the React app
 app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve the static files from upload folder
 
 // API
@@ -81,8 +81,13 @@ app.use("/social", socialRoutes);
 app.use("/analytics", AnalyticsRoutes);
 
 // Handles any requests that don't match the ones above
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/frontend/build/index.html"));
+app.get("*", function (_, res) {
+  res.sendFile(
+    path.join(__dirname, "./frontend/build/index.html"),
+    function (err) {
+      res.status(500).send(err);
+    }
+  );
 });
 
 // use error handaler
